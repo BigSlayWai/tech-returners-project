@@ -4,6 +4,7 @@ import Image from "next/image";
 
 export default function Home() {
   return (
+    <>
     <section className="bg-gradient-to-br from-primary-100 via-primary-50 to-secondary-100 bg-dotted-pattern bg-cover py-12 md:py-24">
       <div className="wrapper grid grid-cols-1 gap-10 md:grid-cols-2 items-center">
         <div className="flex flex-col justify-center gap-6 md:gap-8">
@@ -27,5 +28,25 @@ export default function Home() {
         </div>
       </div>
     </section>
+
+     <section id="events" className="wrapper my-8 flex flex-col gap-8 md:gap-12">
+        <h2 className="h2-bold">View our <br /> events here</h2>
+
+        <div className="flex w-full flex-col gap-5 md:flex-row">
+          <Search />
+          <CategoryFilter />
+        </div>
+
+        <Collection 
+          data={events?.data}
+          emptyTitle="No Events Found"
+          emptyStateSubtext="Come back later"
+          collectionType="All_Events"
+          limit={6}
+          page={page}
+          totalPages={events?.totalPages}
+        />
+      </section>
+    </>
   );
 }
