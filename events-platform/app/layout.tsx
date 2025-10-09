@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: 'Tech Returners',
   description: 'View events here',
   icons: {
-    icon: '/assets/images/logo.svg'
+    icon: '/assets/images/file.svg'
   }
 }
 
