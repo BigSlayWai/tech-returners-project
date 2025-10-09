@@ -1,9 +1,7 @@
-"use client";
-
 import EventForm from "@/components/shared/EventForm";
-import { useAuth } from "@clerk/nextjs";
 import { getEventById } from "@/lib/actions/event.actions";
-import { useEffect, useState } from "react";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 type UpdateEventProps = {
   params: {
@@ -11,21 +9,30 @@ type UpdateEventProps = {
   };
 };
 
-const UpdateEvent = ({ params: { id } }: UpdateEventProps) => {
-  const { userId } = useAuth(); // Use `useAuth` to retrieve `userId`
-  const [event, setEvent] = useState<Event | null>(null);
+const UpdateEvent = async ({ params: { id } }: UpdateEventProps) => {
+  const { userId } = await auth();
 
-  useEffect(() => {
-    const fetchEvent = async () => {
-      const fetchedEvent = await getEventById(id);
-      setEvent(fetchedEvent);
-    };
+  // Check if user is authenticated
+  if (!userId) {
+    redirect("/sign-in");
+  }
 
-    fetchEvent();
-  }, [id]);
+  // Fetch the event
+  const event = await getEventById(id);
 
+  // Check if event exists
   if (!event) {
-    return <p>Loading...</p>;
+    return (
+      <div className="wrapper my-8">
+        <h1 className="h1-bold text-center">Event Not Found</h1>
+        <p className="text-center mt-4">The event you're trying to update doesn't exist.</p>
+      </div>
+    );
+  }
+
+  // Optional: Check if user owns this event
+  if (event.organizer._id !== userId) {
+    redirect("/");
   }
 
   return (
@@ -39,7 +46,7 @@ const UpdateEvent = ({ params: { id } }: UpdateEventProps) => {
           type="Update"
           event={event}
           eventId={event._id}
-          userId={userId as string}
+          userId={userId}
         />
       </div>
     </>
