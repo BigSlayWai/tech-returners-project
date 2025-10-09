@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    serverActions: true, // Enable Server Actions
+    serverActions: true, // Correctly enable serverActions
   },
   images: {
     domains: ['utfs.io'],
@@ -15,4 +15,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

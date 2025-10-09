@@ -35,7 +35,11 @@ export async function POST(req: Request) {
       'svix-signature': svix_signature,
     }) as WebhookEvent;
   } catch (err) {
-    console.error('Error verifying webhook:', err.message || err);
+    if (err instanceof Error) {
+      console.error('Error verifying webhook:', err.message);
+    } else {
+      console.error('Error verifying webhook:', err);
+    }
     return new Response('Webhook verification failed', { status: 400 });
   }
 
@@ -75,6 +79,10 @@ export async function POST(req: Request) {
     if (eventType === 'user.updated') {
       const { image_url, first_name, last_name } = evt.data;
 
+      if (!id) {
+        return new Response('Invalid user.updated payload: missing id', { status: 400 });
+      }
+
       const user = {
         firstName: first_name || '',
         lastName: last_name || '',
@@ -87,6 +95,10 @@ export async function POST(req: Request) {
     }
 
     if (eventType === 'user.deleted') {
+      if (!id) {
+        return new Response('Invalid user.deleted payload: missing id', { status: 400 });
+      }
+
       const deletedUser = await deleteUser(id);
 
       return NextResponse.json({ message: 'OK', user: deletedUser });
