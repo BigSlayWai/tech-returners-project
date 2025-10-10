@@ -4,13 +4,13 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 type UpdateEventProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 const UpdateEvent = async ({ params }: UpdateEventProps) => {
-  const { id } = params; // Destructure `id` from `params`
+  const { id } = await params; // Await the `params` promise
   const { userId } = await auth();
 
   // Check if user is authenticated
