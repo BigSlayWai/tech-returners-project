@@ -1,10 +1,9 @@
 import { type ClassValue, clsx } from 'clsx'
 
 import { twMerge } from 'tailwind-merge'
-var qs = require('qs');
+import qs from 'query-string'
 
-
-import { RemoveUrlQueryParams, UrlQueryParams } from '@/types'
+import { UrlQueryParams, RemoveUrlQueryParams } from '@/types'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
