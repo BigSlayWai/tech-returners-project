@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-
+import { Query } from 'mongoose'; 
 import { connectToDatabase } from '@/lib/database'
 import Event from '@/lib/database/models/event.model'
 import User from '@/lib/database/models/user.model'
@@ -21,11 +21,11 @@ const getCategoryByName = async (name: string) => {
   return Category.findOne({ name: { $regex: name, $options: 'i' } })
 }
 
-const populateEvent = (query: any) => {
+const populateEvent = (query: Query<any, any>) => {
   return query
     .populate({ path: 'organizer', model: User, select: '_id firstName lastName' })
-    .populate({ path: 'category', model: Category, select: '_id name' })
-}
+    .populate({ path: 'category', model: Category, select: '_id name' });
+};
 
 // CREATE
 export async function createEvent({ userId, event, path }: CreateEventParams) {

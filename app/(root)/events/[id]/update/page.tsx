@@ -25,7 +25,7 @@ const UpdateEvent = async ({ params: { id } }: UpdateEventProps) => {
     return (
       <div className="wrapper my-8">
         <h1 className="h1-bold text-center">Event Not Found</h1>
-        <p className="text-center mt-4">The event you're trying to update doesn't exist.</p>
+        <p className="text-center mt-4">The event you&apos;re trying to update doesn&apos;t exist.</p>
       </div>
     );
   }
