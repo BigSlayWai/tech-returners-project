@@ -17,13 +17,13 @@ export default function Home() {
           </Button>
         </div>
 
-        <div className="hexagon-frame">
+        <div className="w-full">
           <Image 
-            src="/assets/images/hero.png"
+            src="/assets/images/stockhero.png"
             alt="hero"
             width={1000}
             height={1000}
-            className="object-cover"
+            className="object-cover rounded-lg"
           />
         </div>
       </div>
