@@ -222,9 +222,9 @@ Distributed under the Unlicense License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Wai Hleng Swe - [Linkedin](https://www.linkedin.com/in/wai-hleng-swe-b96096231/) - waihlengisatwork@gmail.com
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: [https://github.com/BigSlayWai/tech-returners-project](https://github.com/BigSlayWai/tech-returners-project)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
