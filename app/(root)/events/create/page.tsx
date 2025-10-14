@@ -45,7 +45,7 @@ const CreateEvent = () => {
               </p>
             </div>
             <Link
-              href="/events"
+              href="/"
               className="text-sm px-3 py-2 rounded-full bg-white dark:bg-gray-800/60 shadow-sm hover:opacity-90 transition"
             >
               ← Back to events
