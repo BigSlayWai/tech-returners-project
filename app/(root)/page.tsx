@@ -65,54 +65,44 @@ export default function Home() {
           ) : events.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {events.map((event) => (
-                <div
-                  key={event.id}
-                  className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition p-6 flex flex-col justify-between"
-                >
-                  <div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
-                      {event.name.text}
-                    </h3>
+  <div
+    key={event.id}
+    className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition p-6 flex flex-col justify-between"
+  >
+    <div>
+      {/* Title */}
+      <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
+        {event.title}
+      </h3>
 
-                    {/* Date */}
-                    {event.start?.local && (
-                      <p className="text-sm text-gray-500 mb-3">
-                        {new Date(event.start.local).toLocaleDateString("en-GB", {
-                          weekday: "short",
-                          day: "numeric",
-                          month: "short",
-                        })}{" "}
-                        at{" "}
-                        {new Date(event.start.local).toLocaleTimeString("en-GB", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </p>
-                    )}
+      {/* Description */}
+      <p className="text-gray-600 text-sm line-clamp-3">
+        {event.description || "No description available."}
+      </p>
 
-                    {/* Description */}
-                    <p className="text-gray-600 text-sm line-clamp-3">
-                      {event.description?.text?.slice(0, 180) ||
-                        "No description available."}
-                    </p>
-                  </div>
+      {/* Price */}
+      <p className="text-gray-800 font-bold mt-2">${event.price}</p>
+    </div>
 
-                  {/* Link Button */}
-                  <Button
-                    asChild
-                    variant="secondary"
-                    className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white"
-                  >
-                    <Link
-                      href={event.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      View Event →
-                    </Link>
-                  </Button>
-                </div>
-              ))}
+    {/* Image */}
+    <img
+      src={event.image}
+      alt={event.title}
+      className="w-full h-48 object-cover rounded-md mb-4"
+    />
+
+    {/* Link Button */}
+    <Button
+      asChild
+      variant="secondary"
+      className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white"
+    >
+      <Link href="#" target="_blank" rel="noopener noreferrer">
+        View Event →
+      </Link>
+    </Button>
+  </div>
+))}
             </div>
           ) : (
             <p className="text-gray-500">No events found.</p>
