@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { Lens } from "@/components/ui/lens"; // Import the Lens component
 
 export default function Home() {
   const [events, setEvents] = useState<any[]>([]);
@@ -65,44 +66,46 @@ export default function Home() {
           ) : events.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {events.map((event) => (
-  <div
-    key={event.id}
-    className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition p-6 flex flex-col justify-between"
-  >
-    <div>
-      {/* Title */}
-      <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
-        {event.title}
-      </h3>
+                <div
+                  key={event.id}
+                  className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition p-6 flex flex-col justify-between"
+                >
+                  <div>
+                    {/* Title */}
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
+                      {event.title}
+                    </h3>
 
-      {/* Description */}
-      <p className="text-gray-600 text-sm line-clamp-3">
-        {event.description || "No description available."}
-      </p>
+                    {/* Description */}
+                    <p className="text-gray-600 text-sm line-clamp-3">
+                      {event.description || "No description available."}
+                    </p>
 
-      {/* Price */}
-      <p className="text-gray-800 font-bold mt-2">${event.price}</p>
-    </div>
+                    {/* Price */}
+                    <p className="text-gray-800 font-bold mt-2">${event.price}</p>
+                  </div>
 
-    {/* Image */}
-    <img
-      src={event.image}
-      alt={event.title}
-      className="w-full h-48 object-cover rounded-md mb-4"
-    />
+                  {/* Image with Lens */}
+                  <Lens zoomFactor={1.5} lensSize={200} ariaLabel="Zoomed Coffee Image">
+                    <img
+                      src={event.image}
+                      alt={event.title}
+                      className="w-full h-48 object-cover rounded-md mb-4"
+                    />
+                  </Lens>
 
-    {/* Link Button */}
-    <Button
-      asChild
-      variant="secondary"
-      className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white"
-    >
-      <Link href="#" target="_blank" rel="noopener noreferrer">
-        View Event →
-      </Link>
-    </Button>
-  </div>
-))}
+                  {/* Link Button */}
+                  <Button
+                    asChild
+                    variant="secondary"
+                    className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    <Link href="#" target="_blank" rel="noopener noreferrer">
+                      View Event →
+                    </Link>
+                  </Button>
+                </div>
+              ))}
             </div>
           ) : (
             <p className="text-gray-500">No events found.</p>
