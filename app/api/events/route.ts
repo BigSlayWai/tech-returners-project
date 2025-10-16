@@ -26,7 +26,11 @@ const generateMockEvents = async (count: number) => {
         image: imageUrl, // Use the Coffee API URL directly
       });
     } catch (error) {
-      console.error('Error generating mock event:', error.message);
+      if (error instanceof Error) {
+        console.error('Error generating mock event:', error.message);
+      } else {
+        console.error('Unknown error generating mock event:', error);
+      }
     }
   }
 
