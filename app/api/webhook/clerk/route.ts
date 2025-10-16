@@ -6,7 +6,7 @@ import { createUser, updateUser, deleteUser } from '@/lib/actions/user.actions';
 import { clerkClient } from '@clerk/nextjs/server';
 
 export async function POST(req: Request) {
-  const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SIGNING_SECRET;
+  const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
   if (!WEBHOOK_SECRET) {
     console.error('WEBHOOK_SECRET is not defined in the environment variables.');
