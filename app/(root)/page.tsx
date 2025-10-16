@@ -64,49 +64,92 @@ export default function Home() {
           {loading ? (
             <p className="text-gray-500">Loading events...</p>
           ) : events.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {events.map((event) => (
-                <div
-                  key={event.id}
-                  className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition p-6 flex flex-col justify-between"
-                >
-                  <div>
-                    {/* Title */}
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
-                      {event.title}
-                    </h3>
-
-                    {/* Description */}
-                    <p className="text-gray-600 text-sm line-clamp-3">
-                      {event.description || "No description available."}
-                    </p>
-
-                    {/* Price */}
-                    <p className="text-gray-800 font-bold mt-2">${event.price}</p>
-                  </div>
-
-                  {/* Image with Lens */}
-                  <Lens zoomFactor={1.5} lensSize={200} ariaLabel="Zoomed Coffee Image">
-                    <img
-                      src={event.image}
-                      alt={event.title}
-                      className="w-full h-48 object-cover rounded-md mb-4"
-                    />
-                  </Lens>
-
-                  {/* Link Button */}
-                  <Button
-                    asChild
-                    variant="secondary"
-                    className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white"
-                  >
-                    <Link href="#" target="_blank" rel="noopener noreferrer">
-                      View Event →
-                    </Link>
-                  </Button>
+            <>
+              {/* Mobile Carousel */}
+              <div className="sm:hidden">
+                <div className="carousel w-full">
+                  {events.map((event, index) => (
+                    <div
+                      key={event.id}
+                      id={`slide${index + 1}`}
+                      className="carousel-item relative w-full"
+                    >
+                      <div className="p-4">
+                        <Image
+                          src={event.image}
+                          alt={event.title}
+                          width={1000}
+                          height={500}
+                          className="w-full h-48 object-cover rounded-md"
+                        />
+                        <h3 className="text-lg font-semibold mt-4">{event.title}</h3>
+                        <p className="text-gray-600 text-sm">{event.description}</p>
+                        <p className="text-gray-800 font-bold mt-2">${event.price}</p>
+                      </div>
+                      <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                        <a
+                          href={`#slide${index === 0 ? events.length : index}`}
+                          className="btn btn-circle"
+                        >
+                          ❮
+                        </a>
+                        <a
+                          href={`#slide${(index + 1) % events.length + 1}`}
+                          className="btn btn-circle"
+                        >
+                          ❯
+                        </a>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+
+              {/* Desktop Grid */}
+              <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {events.map((event) => (
+                  <div
+                    key={event.id}
+                    className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition p-6 flex flex-col justify-between"
+                  >
+                    <div>
+                      {/* Title */}
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
+                        {event.title}
+                      </h3>
+
+                      {/* Description */}
+                      <p className="text-gray-600 text-sm line-clamp-3">
+                        {event.description || "No description available."}
+                      </p>
+
+                      {/* Price */}
+                      <p className="text-gray-800 font-bold mt-2">${event.price}</p>
+                    </div>
+
+                    {/* Image with Lens */}
+                    <Lens zoomFactor={1.5} lensSize={200} ariaLabel="Zoomed Coffee Image">
+                      <img
+                        src={event.image}
+                        alt={event.title}
+                        className="w-full h-48 object-cover rounded-md mb-4"
+                      />
+                    </Lens>
+
+                    {/* Link Button */}
+                    <Button
+                      asChild
+                      variant="secondary"
+                      className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      <Link href="#" target="_blank" rel="noopener noreferrer">
+                        View Event →
+                      </Link>
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </>
           ) : (
             <p className="text-gray-500">No events found.</p>
           )}

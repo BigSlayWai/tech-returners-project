@@ -4,7 +4,7 @@ const nextConfig = {
     serverActions: true, // Correctly enable serverActions
   },
   images: {
-    domains: ['utfs.io'],
+    domains: ['utfs.io', 'coffee.alexflipnote.dev'],
     remotePatterns: [
       {
         protocol: 'https',
