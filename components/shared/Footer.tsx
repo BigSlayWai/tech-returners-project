@@ -16,7 +16,15 @@ const Footer = () => {
         <p>
           Tech Returners 2025.
           <br />
-          Website by ThinkEQ
+          Website by{" "}
+          <Link
+            href="https://thinkeq.co.uk/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            ThinkEQ
+          </Link>
         </p>
       </aside>
       <nav>
