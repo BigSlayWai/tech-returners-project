@@ -1,160 +1,75 @@
-"use client";
+import CategoryFilter from '@/components/shared/CategoryFilter'
+import Collection from '@/components/shared/Collection'
+import Search from '@/components/shared/Search'
+import { Button } from '@/components/ui/button'
+import { getAllEvents } from '@/lib/actions/event.actions';
+import { SearchParamProps } from '@/types';
+import Image from 'next/image'
+import Link from 'next/link'
+import { TypingAnimation } from '@/components/ui/typing-animation';
 
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import { Lens } from "@/components/ui/lens"; // Import the Lens component
+export default async function Home({ searchParams }: SearchParamProps) {
+  const params = await searchParams;
+  
+  const page = Number(params?.page) || 1;
+  const searchText = (params?.query as string) || '';
+  const category = (params?.category as string) || '';
 
-export default function Home() {
-  const [events, setEvents] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchEvents() {
-      try {
-        const response = await fetch("/api/events");
-        const data = await response.json();
-        setEvents(data.events || data || []);
-      } catch (error) {
-        console.error("Failed to fetch events:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchEvents();
-  }, []);
+  const events = await getAllEvents({
+    query: searchText,
+    category,
+    page,
+    limit: 6
+  })
 
   return (
     <>
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-100 via-primary-50 to-secondary-100 bg-dotted-pattern bg-cover py-12 md:py-24">
-        <div className="wrapper grid grid-cols-1 gap-10 md:grid-cols-2 items-center">
-          <div className="flex flex-col justify-center gap-6 md:gap-8">
-            <h1 className="text-4xl font-bold text-[hsl(var(--foreground))] leading-tight">
-              Welcome To Tech Returners
+      <section className="bg-primary-50 bg-dotted-pattern bg-contain py-5 md:py-10">
+        <div className="wrapper grid grid-cols-1 gap-5 md:grid-cols-2 2xl:gap-0">
+          <div className="flex flex-col justify-center gap-8">
+            <h1 className="h1-bold">
+                Host and Connect Your Tech Events through Our Platform!
             </h1>
-            <p className="text-lg text-[hsl(var(--muted-foreground))]">
-              Discover our events and join the journey to upskill and grow.
+            <p className="p-regular-20 md:p-regular-24">
+              <TypingAnimation>
+                Book and learn from numerous tech events from top established mentors in world-class companies with our global community.
+              </TypingAnimation>
             </p>
-            <Button size="lg" asChild className="btn-primary w-full sm:w-auto">
-              <Link href="#events" scroll={false}>Explore Now</Link>
+            <Button size="lg" asChild className="button w-full sm:w-fit">
+              <Link href="#events">
+                Explore Now
+              </Link>
             </Button>
           </div>
 
-          <div className="w-full">
-            <Image 
-              src="/assets/images/stockhero.png"
-              alt="hero"
-              width={1000}
-              height={1000}
-              className="object-cover rounded-lg"
-            />
-          </div>
+          <Image 
+            src="/assets/images/stockhero.png"
+            alt="hero"
+            width={1000}
+            height={1000}
+            className="max-h-[70vh] object-contain object-center 2xl:max-h-[50vh]"
+          />
         </div>
-      </section>
+      </section> 
 
-      {/* Events Section */}
-      <section id="events" className="py-12 md:py-24 bg-gray-50">
-        <div className="wrapper">
-          <h2 className="text-3xl font-semibold mb-8 text-gray-800">
-            Upcoming Tech Events in London
-          </h2>
+      <section id="events" className="wrapper my-8 flex flex-col gap-8 md:gap-12">
+        <h2 className="h2-bold">View our events here <br /></h2>
 
-          {loading ? (
-            <p className="text-gray-500">Loading events...</p>
-          ) : events.length > 0 ? (
-            <>
-              {/* Mobile Carousel */}
-              <div className="sm:hidden">
-                <div className="carousel w-full">
-                  {events.map((event, index) => (
-                    <div
-                      key={event.id}
-                      id={`slide${index + 1}`}
-                      className="carousel-item relative w-full"
-                    >
-                      <div className="p-4">
-                        <Image
-                          src={event.image}
-                          alt={event.title}
-                          width={1000}
-                          height={500}
-                          className="w-full h-48 object-cover rounded-md"
-                        />
-                        <h3 className="text-lg font-semibold mt-4">{event.title}</h3>
-                        <p className="text-gray-600 text-sm">{event.description}</p>
-                        <p className="text-gray-800 font-bold mt-2">${event.price}</p>
-                      </div>
-                      <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-                        <a
-                          href={`#slide${index === 0 ? events.length : index}`}
-                          className="btn btn-circle"
-                        >
-                          ❮
-                        </a>
-                        <a
-                          href={`#slide${(index + 1) % events.length + 1}`}
-                          className="btn btn-circle"
-                        >
-                          ❯
-                        </a>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Desktop Grid */}
-              <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {events.map((event) => (
-                  <div
-                    key={event.id}
-                    className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition p-6 flex flex-col justify-between"
-                  >
-                    <div>
-                      {/* Title */}
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
-                        {event.title}
-                      </h3>
-
-                      {/* Description */}
-                      <p className="text-gray-600 text-sm line-clamp-3">
-                        {event.description || "No description available."}
-                      </p>
-
-                      {/* Price */}
-                      <p className="text-gray-800 font-bold mt-2">${event.price}</p>
-                    </div>
-
-                    {/* Image with Lens */}
-                    <Lens zoomFactor={1.5} lensSize={200} ariaLabel="Zoomed Coffee Image">
-                      <img
-                        src={event.image}
-                        alt={event.title}
-                        className="w-full h-48 object-cover rounded-md mb-4"
-                      />
-                    </Lens>
-
-                    {/* Link Button */}
-                    <Button
-                      asChild
-                      variant="secondary"
-                      className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                      <Link href="#" target="_blank" rel="noopener noreferrer">
-                        View Event →
-                      </Link>
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </>
-          ) : (
-            <p className="text-gray-500">No events found.</p>
-          )}
+        <div className="flex w-full flex-col gap-5 md:flex-row">
+          <Search />
+          <CategoryFilter />
         </div>
+
+        <Collection 
+          data={events?.data}
+          emptyTitle="No Events Found"
+          emptyStateSubtext="Come back later"
+          collectionType="All_Events"
+          limit={6}
+          page={page}
+          totalPages={events?.totalPages}
+        />
       </section>
     </>
-  );
+  )
 }

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import EventForm from "@/components/shared/EventForm";
-import { useAuth } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 
 const TipsPanel = () => (
   <aside className="hidden lg:block">
@@ -31,7 +31,17 @@ const TipsPanel = () => (
 );
 
 const CreateEvent = () => {
-  const { userId } = useAuth();
+  const { user } = useUser(); // Access the authenticated user
+  const userId = user?.publicMetadata?.userId as string | undefined; // Extract userId from public metadata
+
+  if (!userId) {
+    return (
+      <div className="wrapper my-8">
+        <h1 className="h1-bold text-center">Unauthorized</h1>
+        <p className="text-center mt-4">You must be signed in to create an event.</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -59,7 +69,7 @@ const CreateEvent = () => {
           <section className="lg:col-span-2">
             <div className="p-6 rounded-xl bg-white dark:bg-gray-800 shadow-lg transition-transform hover:translate-y-0.5">
               <h3 className="text-xl font-semibold mb-4">Event details</h3>
-              <EventForm userId={userId as string} type="Create" />
+              <EventForm userId={userId} type="Create" />
             </div>
           </section>
 

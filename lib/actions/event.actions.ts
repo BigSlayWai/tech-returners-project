@@ -1,4 +1,5 @@
 'use server'
+import mongoose from 'mongoose';
 
 import { revalidatePath } from 'next/cache'
 import { Query } from 'mongoose'; 
@@ -30,17 +31,27 @@ const populateEvent = (query: Query<any, any>) => {
 // CREATE
 export async function createEvent({ userId, event, path }: CreateEventParams) {
   try {
-    await connectToDatabase()
+    await connectToDatabase();
 
-    const organizer = await User.findById(userId)
-    if (!organizer) throw new Error('Organizer not found')
+    // Validate and convert userId to ObjectId if necessary
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new Error('Invalid userId format');
+    }
 
-    const newEvent = await Event.create({ ...event, category: event.categoryId, organizer: userId })
-    revalidatePath(path)
+    const organizer = await User.findById(userId);
+    if (!organizer) throw new Error('Organizer not found');
 
-    return JSON.parse(JSON.stringify(newEvent))
+    const newEvent = await Event.create({
+      ...event,
+      category: event.categoryId,
+      organizer: userId,
+    });
+
+    revalidatePath(path);
+
+    return JSON.parse(JSON.stringify(newEvent));
   } catch (error) {
-    handleError(error)
+    handleError(error);
   }
 }
 

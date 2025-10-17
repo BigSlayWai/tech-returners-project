@@ -16,6 +16,9 @@
     --muted: 60 20% 90%; /* Muted Beige */
     --muted-foreground: 0 0% 17%; /* Charcoal / Dark Gray */
     --radius: 0.5rem;
+    --primary-gradient: linear-gradient(to right, #624cf5, #5438dc);
+    --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    --hover-transition: all 0.3s ease;
   }
 
   .dark {
@@ -141,9 +144,16 @@
     overflow: hidden;
   }
 
-  .hexagon-frame img {
-    @apply w-full h-full object-cover;
+  @layer components {
+  .button-gradient {
+    @apply relative overflow-hidden bg-gradient-to-r from-[#624cf5] to-[#5438dc] 
+    text-white transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/30;
   }
+  
+  .glass-card {
+    @apply backdrop-blur-md bg-white/50 rounded-xl shadow-lg border border-white/20;
+  }
+}
 }
 
 /* Utilities */
