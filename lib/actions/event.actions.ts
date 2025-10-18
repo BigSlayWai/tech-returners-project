@@ -1,8 +1,7 @@
 'use server'
-import mongoose from 'mongoose';
 
 import { revalidatePath } from 'next/cache'
-import { Query } from 'mongoose'; 
+
 import { connectToDatabase } from '@/lib/database'
 import Event from '@/lib/database/models/event.model'
 import User from '@/lib/database/models/user.model'
@@ -22,36 +21,26 @@ const getCategoryByName = async (name: string) => {
   return Category.findOne({ name: { $regex: name, $options: 'i' } })
 }
 
-const populateEvent = (query: Query<any, any>) => {
+const populateEvent = (query: any) => {
   return query
     .populate({ path: 'organizer', model: User, select: '_id firstName lastName' })
-    .populate({ path: 'category', model: Category, select: '_id name' });
-};
+    .populate({ path: 'category', model: Category, select: '_id name' })
+}
 
 // CREATE
 export async function createEvent({ userId, event, path }: CreateEventParams) {
   try {
-    await connectToDatabase();
+    await connectToDatabase()
 
-    // Validate and convert userId to ObjectId if necessary
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      throw new Error('Invalid userId format');
-    }
+    const organizer = await User.findById(userId)
+    if (!organizer) throw new Error('Organizer not found')
 
-    const organizer = await User.findById(userId);
-    if (!organizer) throw new Error('Organizer not found');
+    const newEvent = await Event.create({ ...event, category: event.categoryId, organizer: userId })
+    revalidatePath(path)
 
-    const newEvent = await Event.create({
-      ...event,
-      category: event.categoryId,
-      organizer: userId,
-    });
-
-    revalidatePath(path);
-
-    return JSON.parse(JSON.stringify(newEvent));
+    return JSON.parse(JSON.stringify(newEvent))
   } catch (error) {
-    handleError(error);
+    handleError(error)
   }
 }
 
@@ -71,24 +60,51 @@ export async function getEventById(eventId: string) {
 }
 
 // UPDATE
+// UPDATE
 export async function updateEvent({ userId, event, path }: UpdateEventParams) {
   try {
     await connectToDatabase()
 
     const eventToUpdate = await Event.findById(event._id)
-    if (!eventToUpdate || eventToUpdate.organizer.toHexString() !== userId) {
-      throw new Error('Unauthorized or event not found')
+    
+    // Debug the values being compared
+    console.log('Event to update:', eventToUpdate ? 'found' : 'not found')
+    console.log('Organizer ID (from event):', eventToUpdate?.organizer)
+    console.log('User ID (from params):', userId)
+    
+    // Check if organizer exists and convert to string for comparison
+    const organizerId = eventToUpdate?.organizer?.toString()
+    console.log('Organizer ID as string:', organizerId)
+    console.log('IDs match?', organizerId === userId)
+    
+    if (!eventToUpdate || organizerId !== userId) {
+      // If there's a mismatch, it might be a Clerk ID vs MongoDB ID issue
+      // Let's check if the userId is a Clerk ID and find the corresponding MongoDB user
+      const mongoUser = await User.findOne({ clerkId: userId })
+      
+      if (mongoUser && eventToUpdate?.organizer.toString() === mongoUser._id.toString()) {
+        console.log('Match found via Clerk ID lookup!')
+        // Found a match - continue with the update using the mongoUser ID
+      } else {
+        throw new Error('Unauthorized or event not found')
+      }
     }
 
+    // Update the event
     const updatedEvent = await Event.findByIdAndUpdate(
       event._id,
       { ...event, category: event.categoryId },
       { new: true }
     )
+    
+    // Populate the updated event before returning
+    const populatedEvent = await populateEvent(Event.findById(updatedEvent._id))
+    
     revalidatePath(path)
 
-    return JSON.parse(JSON.stringify(updatedEvent))
+    return JSON.parse(JSON.stringify(populatedEvent))
   } catch (error) {
+    console.error('Update error:', error)
     handleError(error)
   }
 }
@@ -139,20 +155,41 @@ export async function getEventsByUser({ userId, limit = 6, page }: GetEventsByUs
   try {
     await connectToDatabase()
 
-    const conditions = { organizer: userId }
-    const skipAmount = (page - 1) * limit
+    // Find MongoDB user ID if userId is a Clerk ID
+    let mongoUserId = userId
+    if (userId.startsWith('user_')) {
+      const user = await User.findOne({ clerkId: userId })
+      if (user) {
+        mongoUserId = user._id
+      }
+    }
 
+    // Calculate pagination
+    const skipAmount = (page - 1) * limit
+    const conditions = { organizer: mongoUserId }
+
+    // Create pagination conditions
     const eventsQuery = Event.find(conditions)
       .sort({ createdAt: 'desc' })
       .skip(skipAmount)
       .limit(limit)
+      .populate('category organizer')
 
-    const events = await populateEvent(eventsQuery)
+    const events = await eventsQuery.exec()
     const eventsCount = await Event.countDocuments(conditions)
 
-    return { data: JSON.parse(JSON.stringify(events)), totalPages: Math.ceil(eventsCount / limit) }
+    const totalPages = Math.ceil(eventsCount / limit)
+
+    return {
+      data: JSON.parse(JSON.stringify(events)),
+      totalPages,
+    }
   } catch (error) {
-    handleError(error)
+    console.error('Error getting events by user:', error)
+    return {
+      data: [],
+      totalPages: 0
+    }
   }
 }
 
