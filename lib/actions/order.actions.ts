@@ -117,14 +117,36 @@ export async function getOrdersByEvent({ searchString, eventId }: GetOrdersByEve
 }
 
 // GET ORDERS BY USER
+// GET ORDERS BY USER
 export async function getOrdersByUser({ userId, limit = 3, page }: GetOrdersByUserParams) {
   try {
-    await connectToDatabase()
+    await connectToDatabase();
 
-    const skipAmount = (Number(page) - 1) * limit
-    const conditions = { buyer: userId }
+    // Check if the userId is a Clerk ID and find the corresponding MongoDB user
+    let buyerId = userId;
+    
+    if (userId.startsWith('user_')) {
+      // This is a Clerk ID, not a MongoDB ObjectId
+      console.log('Looking up MongoDB user for Clerk ID:', userId);
+      const user = await User.findOne({ clerkId: userId });
+      
+      if (!user) {
+        console.log('No MongoDB user found with Clerk ID:', userId);
+        return { 
+          data: [],
+          totalPages: 0 
+        };
+      }
+      
+      buyerId = user._id.toString();
+      console.log('Found MongoDB user ID:', buyerId);
+    }
 
-    const orders = await Order.distinct('event._id')
+    const skipAmount = (Number(page) - 1) * limit;
+    const conditions = { buyer: buyerId };
+
+    // Remove .distinct('event._id') as it doesn't work with the chained methods
+    const orders = await Order
       .find(conditions)
       .sort({ createdAt: 'desc' })
       .skip(skipAmount)
@@ -137,12 +159,17 @@ export async function getOrdersByUser({ userId, limit = 3, page }: GetOrdersByUs
           model: User,
           select: '_id firstName lastName',
         },
-      })
+      });
 
-    const ordersCount = await Order.distinct('event._id').countDocuments(conditions)
+    // Also fix the count query
+    const ordersCount = await Order.countDocuments(conditions);
 
-    return { data: JSON.parse(JSON.stringify(orders)), totalPages: Math.ceil(ordersCount / limit) }
+    return { 
+      data: JSON.parse(JSON.stringify(orders)), 
+      totalPages: Math.ceil(ordersCount / limit) 
+    };
   } catch (error) {
-    handleError(error)
+    console.error('Error in getOrdersByUser:', error);
+    handleError(error);
   }
 }

@@ -1,10 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    serverActions: true, // Correctly enable serverActions
+    serverActions: {
+      allowedOrigins: ['localhost:3000'],
+    },
   },
   images: {
-    domains: ['utfs.io', 'coffee.alexflipnote.dev'],
+    domains: ['utfs.io', 'coffee.alexflipnote.dev', 'img.clerk.com', 'images.unsplash.com'],
     remotePatterns: [
       {
         protocol: 'https',

@@ -6,22 +6,35 @@ import { IOrder } from '@/lib/database/models/order.model'
 import { SearchParamProps } from '@/types'
 import { auth } from '@clerk/nextjs/server'
 import Link from 'next/link'
-import React from 'react'
 
 const ProfilePage = async ({ searchParams }: SearchParamProps) => {
-   const { userId } = await auth();
+  // Await auth to get userId
+  const { userId } = await auth();
   
   if (!userId) {
     throw new Error("Unauthorized");
   }
+
+  // Await searchParams before using
+  const resolvedSearchParams = await searchParams;
   
-  const ordersPage = Number(searchParams?.ordersPage) || 1;
-  const eventsPage = Number(searchParams?.eventsPage) || 1;
+  const ordersPage = Number(resolvedSearchParams?.ordersPage) || 1;
+  const eventsPage = Number(resolvedSearchParams?.eventsPage) || 1;
 
-  const orders = await getOrdersByUser({ userId, page: ordersPage})
+  // Get orders using the updated function (which handles Clerk IDs)
+  const orders = await getOrdersByUser({ 
+    userId, 
+    page: ordersPage 
+  });
 
-  const orderedEvents = orders?.data.map((order: IOrder) => order.event) || [];
-  const organizedEvents = await getEventsByUser({ userId, page: eventsPage })
+  // Extract events from orders or provide empty array if no orders
+  const orderedEvents = orders?.data?.map((order: IOrder) => order.event) || [];
+  
+  // Get events organized by the user
+  const organizedEvents = await getEventsByUser({ 
+    userId, 
+    page: eventsPage 
+  });
 
   return (
     <>
@@ -46,7 +59,7 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
           limit={3}
           page={ordersPage}
           urlParamName="ordersPage"
-          totalPages={orders?.totalPages}
+          totalPages={orders?.totalPages || 0}
         />
       </section>
 
@@ -64,14 +77,14 @@ const ProfilePage = async ({ searchParams }: SearchParamProps) => {
 
       <section className="wrapper my-8">
         <Collection 
-          data={organizedEvents?.data}
+          data={organizedEvents?.data || []}
           emptyTitle="No events have been created yet"
           emptyStateSubtext="Go create some now"
           collectionType="Events_Organized"
           limit={3}
           page={eventsPage}
           urlParamName="eventsPage"
-          totalPages={organizedEvents?.totalPages}
+          totalPages={organizedEvents?.totalPages || 0}
         />
       </section>
     </>
