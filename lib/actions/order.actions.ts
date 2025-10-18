@@ -117,15 +117,23 @@ export async function getOrdersByEvent({ searchString, eventId }: GetOrdersByEve
 }
 
 // GET ORDERS BY USER
-// GET ORDERS BY USER
 export async function getOrdersByUser({ userId, limit = 3, page }: GetOrdersByUserParams) {
   try {
     await connectToDatabase();
 
-    // Check if the userId is a Clerk ID and find the corresponding MongoDB user
+    // Check if userId is provided
+    if (!userId) {
+      console.log('No userId provided');
+      return { 
+        data: [],
+        totalPages: 0 
+      };
+    }
+
     let buyerId = userId;
     
-    if (userId.startsWith('user_')) {
+    // Check if userId is a Clerk ID (starts with 'user_')
+    if (typeof userId === 'string' && userId.startsWith('user_')) {
       // This is a Clerk ID, not a MongoDB ObjectId
       console.log('Looking up MongoDB user for Clerk ID:', userId);
       const user = await User.findOne({ clerkId: userId });
@@ -145,7 +153,6 @@ export async function getOrdersByUser({ userId, limit = 3, page }: GetOrdersByUs
     const skipAmount = (Number(page) - 1) * limit;
     const conditions = { buyer: buyerId };
 
-    // Remove .distinct('event._id') as it doesn't work with the chained methods
     const orders = await Order
       .find(conditions)
       .sort({ createdAt: 'desc' })
@@ -161,7 +168,6 @@ export async function getOrdersByUser({ userId, limit = 3, page }: GetOrdersByUs
         },
       });
 
-    // Also fix the count query
     const ordersCount = await Order.countDocuments(conditions);
 
     return { 

@@ -3,19 +3,17 @@
 import EventForm from "@/components/shared/EventForm"
 import { getEventById } from "@/lib/actions/event.actions"
 import { useUser } from "@clerk/nextjs"
-import { redirect } from "next/navigation"
+import { redirect, useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 // Import the IEvent interface
 import { IEvent } from "@/lib/database/models/event.model"
 
-type UpdateEventProps = {
-  params: {
-    id: string
-  }
-}
-
-const UpdateEvent = ({ params: { id } }: UpdateEventProps) => {
+const UpdateEvent = () => {
   const { user, isLoaded } = useUser()
+  // Use useParams hook to get the id
+  const params = useParams()
+  const id = params.id as string
+  
   // Properly type your state with IEvent | null
   const [event, setEvent] = useState<IEvent | null>(null)
   const [loading, setLoading] = useState(true)
@@ -23,7 +21,7 @@ const UpdateEvent = ({ params: { id } }: UpdateEventProps) => {
   useEffect(() => {
     // Fetch the event data
     const fetchEvent = async () => {
-      if (isLoaded) {
+      if (isLoaded && id) {
         try {
           const eventData = await getEventById(id)
           setEvent(eventData)

@@ -3,11 +3,15 @@ import { Button } from '@/components/ui/button'
 import { getEventsByUser } from '@/lib/actions/event.actions'
 import { getOrdersByUser } from '@/lib/actions/order.actions'
 import { IOrder } from '@/lib/database/models/order.model'
-import { SearchParamProps } from '@/types'
 import { auth } from '@clerk/nextjs/server'
 import Link from 'next/link'
 
-const ProfilePage = async ({ searchParams }: SearchParamProps) => {
+// Define the correct props interface for Next.js 14
+interface ProfilePageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+const ProfilePage = async ({ searchParams }: ProfilePageProps) => {
   // Await auth to get userId
   const { userId } = await auth();
   

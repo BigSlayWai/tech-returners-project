@@ -3,12 +3,16 @@ import Collection from '@/components/shared/Collection'
 import Search from '@/components/shared/Search'
 import { Button } from '@/components/ui/button'
 import { getAllEvents } from '@/lib/actions/event.actions';
-import { SearchParamProps } from '@/types';
 import Image from 'next/image'
 import Link from 'next/link'
 import { TypingAnimation } from '@/components/ui/typing-animation';
 
-export default async function Home({ searchParams }: SearchParamProps) {
+// Update the SearchParamProps to match Next.js 14 App Router
+interface HomeProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
   
   const page = Number(params?.page) || 1;
