@@ -48,14 +48,36 @@ export const createOrder = async (order: CreateOrderParams) => {
   try {
     await connectToDatabase();
     
+    let buyerId = order.buyerId;
+    
+    // Check if we need to handle a MongoDB ObjectId directly or a Clerk ID
+    if (typeof buyerId === 'string') {
+      if (buyerId.startsWith('user_')) {
+        // This is a Clerk ID, we need to find the corresponding user
+        const user = await User.findOne({ clerkId: buyerId });
+        
+        if (!user) {
+          console.error(`User not found with Clerk ID: ${buyerId}`);
+          throw new Error(`User not found with Clerk ID: ${buyerId}`);
+        }
+        
+        // Use the MongoDB ObjectId
+        buyerId = user._id;
+      } else {
+        // Handle potential validation if needed
+        console.log('Using provided buyerId directly:', buyerId);
+      }
+    }
+    
     const newOrder = await Order.create({
       ...order,
       event: order.eventId,
-      buyer: order.buyerId,
+      buyer: buyerId,
     });
 
     return JSON.parse(JSON.stringify(newOrder));
   } catch (error) {
+    console.error('Error creating order:', error);
     handleError(error);
   }
 }
