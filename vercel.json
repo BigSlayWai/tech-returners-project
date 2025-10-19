@@ -2,10 +2,13 @@
   "routes": [
     {
       "src": "/api/webhook/stripe",
-      "dest": "/api/webhook/stripe",
-      "headers": {
-        "x-vercel-protection-bypass": "true"
-      }
+      "dest": "/api/webhook/stripe"
     }
-  ]
+  ],
+  "functions": {
+    "app/api/webhook/stripe/route.ts": {
+      "memory": 1024,
+      "maxDuration": 60
+    }
+  }
 }
