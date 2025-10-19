@@ -2,7 +2,8 @@
   "routes": [
     {
       "src": "/api/webhook/stripe",
-      "dest": "/api/webhook/stripe"
+      "dest": "/api/webhook/stripe",
+      "methods": ["POST", "GET", "OPTIONS"]
     }
   ],
   "functions": {
