@@ -14,7 +14,7 @@ function toGCalDate(value: Date | string) {
   return d.toISOString().replace(/-|:|\.\d{3}/g, '');
 }
 
-export default function AddToCalendar({ title, description, location, start, end }: Props) {
+export default function GoogleCalendar({ title, description, location, start, end }: Props) {
   const dates = `${toGCalDate(start)}/${toGCalDate(end)}`;
   const params = new URLSearchParams({
     action: 'TEMPLATE',
