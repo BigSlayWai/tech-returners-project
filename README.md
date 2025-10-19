@@ -154,9 +154,9 @@ NEXT_PUBLIC_SERVER_URL=http://localhost:3000
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📄 License
+## 📄 Things to note!
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Vercel is not allowing the Stripe payment workflow. Hosting this application through Netlify etc would fix the problem.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
