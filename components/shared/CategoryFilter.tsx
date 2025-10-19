@@ -1,4 +1,4 @@
- "use client"
+"use client"
 
 import {
   Select,
@@ -49,7 +49,7 @@ const CategoryFilter = () => {
 
   return (
     <Select onValueChange={(value: string) => onSelectCategory(value)}>
-      <SelectTrigger className="select-field">
+      <SelectTrigger className="select-field bg-primary-500 text-white hover:bg-primary-500/90">
         <SelectValue placeholder="Category" />
       </SelectTrigger>
       <SelectContent>

@@ -7,7 +7,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { TypingAnimation } from '@/components/ui/typing-animation';
 
-// Update the SearchParamProps to match Next.js 14 App Router
 interface HomeProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
@@ -39,7 +38,7 @@ export default async function Home({ searchParams }: HomeProps) {
                 Book and learn from numerous tech events from top established mentors in world-class companies with our global community.
               </TypingAnimation>
             </p>
-            <Button size="lg" asChild className="button w-full sm:w-fit">
+            <Button size="lg" asChild className="button w-full sm:w-fit text-white hover:text-white">
               <Link href="#events">
                 Explore Now
               </Link>

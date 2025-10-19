@@ -47,7 +47,7 @@ const Checkout = ({ event, userId }: CheckoutProps) => {
         ? 'Processing...'
         : event.isFree
         ? 'Get Ticket'
-        : `Buy Ticket for $${event.price}`}
+        : `Buy Ticket for £${event.price}`}
     </Button>
   );
 };
