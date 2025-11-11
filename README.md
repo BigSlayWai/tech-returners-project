@@ -4,6 +4,12 @@
 
 A full-stack event management application built with Next.js, allowing users to create, browse, and register for events with integrated payment processing.
 
+## 🌐 Live Demo
+
+**[View Live Project →](https://tech-returners-project.vercel.app/)**
+
+*Experience the full functionality of the event management platform*
+
 ## 📋 Table of Contents
 
 - [About The Project](#about-the-project)
@@ -154,9 +160,9 @@ NEXT_PUBLIC_SERVER_URL=http://localhost:3000
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📄 Things to note!
+## 🚀 Coming Soon
 
-Vercel is not allowing the Stripe payment workflow. Hosting this application through Netlify etc would fix the problem.
+**Enhanced Payment Experience** - We're working on optimizing the Stripe payment workflow for even smoother user interactions! Alternative hosting solutions are being explored to provide the best possible checkout experience.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
