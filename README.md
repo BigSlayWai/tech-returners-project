@@ -162,7 +162,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 🚀 Coming Soon
 
-**Enhanced Payment Experience** - We're working on optimizing the Stripe payment workflow for even smoother user interactions! Alternative hosting solutions are being explored to provide the best possible checkout experience.
+Vercel is not allowing the Stripe payment workflow. Hosting this application through Netlify etc would fix the problem.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
