@@ -162,7 +162,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 🚀 Coming Soon
 
-Vercel is not allowing the Stripe payment workflow. Hosting this application through Netlify etc would fix the problem.
+Smoother user transitions!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
